@@ -1,35 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DeadBound : MonoBehaviour
 {
     private new BoxCollider2D collider;
 
-    // Start is called before the first frame update
     private IEnumerator Start()
     {
         this.collider = GetComponent<BoxCollider2D>();
-
-        bool globalRound = false;
+        List<GameObject> hitItems = new List<GameObject>();
         while (true)
         {
             var hits = Physics2D.BoxCastAll(this.collider.bounds.center, this.collider.bounds.size, 0, Vector2.zero);
-            bool thisRound = false;
+            List<GameObject> tempHitItems = new List<GameObject>();
             foreach (var h in hits)
             {
                 if (h.collider.CompareTag(Item.ITEM_TAG))
                 {
-                    thisRound = true;
-                    break;
+                    if (hitItems.Contains(h.collider.gameObject))
+                    {
+                        Debug.Log("game over");
+                        SceneManager.LoadScene("End");
+                        yield return null;
+                    }
+
+                    tempHitItems.Add(h.collider.gameObject);
                 }
             }
-            if (thisRound && globalRound)
-            {
-                // Die
-                Debug.Log("game over");
-            }
-            globalRound = thisRound;
+            hitItems = tempHitItems;
             yield return new WaitForSeconds(1);
         }
     }
