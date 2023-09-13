@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-    const string ITEM_TAG = "Item";
+    public const string ITEM_TAG = "Item";
 
     public ItemData data;
     public ItemRepository repository;
@@ -58,14 +58,18 @@ public class Item : MonoBehaviour
     {
         if (collision2D.gameObject.CompareTag(Item.ITEM_TAG))
         {
-            if (transform.position.y < collision2D.gameObject.transform.position.y)
+            Item other = collision2D.gameObject.GetComponent<Item>();
+            if (other.data.level == this.data.level)
             {
-                ItemData newData = this.repository.GetItem(this.data.level + 1);
-                this.UpdateItemData(newData);
-            }
-            else
-            {
-                Destroy(gameObject);
+                if (transform.position.y < collision2D.gameObject.transform.position.y)
+                {
+                    ItemData newData = this.repository.GetItem(this.data.level + 1);
+                    this.UpdateItemData(newData);
+                }
+                else
+                {
+                    Destroy(gameObject);
+                }
             }
         }
     }
