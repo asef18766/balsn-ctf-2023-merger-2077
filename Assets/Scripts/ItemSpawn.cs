@@ -55,7 +55,8 @@ public class ItemSpawn : MonoBehaviour
     {
         if (!this.item) return;
 
-        this.item.GetComponent<Rigidbody2D>().simulated = true;
+        this.item.GetComponent<Rigidbody2D>().freezeRotation = false;
+        this.item.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
         this.item = null;
     }
 
@@ -67,7 +68,7 @@ public class ItemSpawn : MonoBehaviour
         Vector2 wv = Camera.main.ScreenToWorldPoint(v);
         Vector3 newPos = this.item.transform.position;
         newPos.x = Mathf.Clamp(wv.x, this.minX, this.maxX);
-        this.item.transform.position = newPos;
+        this.item.GetComponent<Rigidbody2D>().MovePosition(newPos);
     }
 
     public void Spawn()
@@ -76,7 +77,8 @@ public class ItemSpawn : MonoBehaviour
         Vector3 spawnPos = new Vector3(0, transform.position.y, 0);
         this.item = Instantiate(this.itemPrefab, spawnPos, Quaternion.identity).GetComponent<Item>();
         Debug.Assert(this.item != null);
-        this.item.GetComponent<Rigidbody2D>().simulated = false;
+        this.item.GetComponent<Rigidbody2D>().freezeRotation = true;
+        this.item.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePositionY;
         StartCoroutine(this.UpdateItemData());
     }
 
