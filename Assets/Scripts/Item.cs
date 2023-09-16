@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,9 +12,20 @@ public class Item : MonoBehaviour
 
     private new SpriteRenderer renderer;
 
+    private bool willUpgrade = false;
+    private bool needDestroy = false;
+
     private void Start()
     {
         this.renderer = GetComponent<SpriteRenderer>();
+    }
+
+    private void Update()
+    {
+        if (this.needDestroy)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void UpdateItemData(ItemData newData)
@@ -59,18 +71,24 @@ public class Item : MonoBehaviour
         if (collision2D.gameObject.CompareTag(Item.ITEM_TAG))
         {
             Item other = collision2D.gameObject.GetComponent<Item>();
-            if (other.data.level == this.data.level)
+            if (other.data.level == this.data.level && !other.willUpgrade)
             {
                 if (transform.position.y < collision2D.gameObject.transform.position.y)
                 {
                     ItemData newData = this.repository.GetItem(this.data.level + 1);
-                    this.UpdateItemData(newData);
-                }
-                else
-                {
-                    Destroy(gameObject);
+                    GetComponent<Rigidbody2D>().AddForce(collision2D.transform.position - transform.position);
+                    StartCoroutine(this.UpdateItemDataCoroutine(newData));
+                    other.needDestroy = true;
                 }
             }
         }
+    }
+
+    private IEnumerator UpdateItemDataCoroutine(ItemData newData)
+    {
+        this.willUpgrade = true;
+        yield return new WaitForEndOfFrame();
+        this.UpdateItemData(newData);
+        this.willUpgrade = false;
     }
 }
