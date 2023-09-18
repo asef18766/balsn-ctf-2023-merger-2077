@@ -2,9 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Item : MonoBehaviour
 {
+    private Text scoreboard;
+    private SuperSecretValueStorage sv;
     public const string ITEM_TAG = "Item";
 
     public ItemData data;
@@ -15,9 +18,14 @@ public class Item : MonoBehaviour
     private bool willUpgrade = false;
     private bool needDestroy = false;
 
+
+    private string score = "score";
+    
     private void Start()
     {
         this.renderer = GetComponent<SpriteRenderer>();
+        scoreboard = FindObjectOfType<Text>();
+        sv = FindObjectOfType<SuperSecretValueStorage>();
     }
 
     private void Update()
@@ -75,7 +83,12 @@ public class Item : MonoBehaviour
             {
                 if (transform.position.y < collision2D.gameObject.transform.position.y)
                 {
-                    ItemData newData = this.repository.GetItem(this.data.level + 1);
+                    var newData = this.repository.GetItem(this.data.level + 1);
+                    var pt = (int)sv.ReadSecretValue(score);
+                    pt += (data.level + 1);
+                    sv.WriteSecretValue(score, pt);
+                    scoreboard.text = $"pt: {pt}";
+                    
                     GetComponent<Rigidbody2D>().AddForce(collision2D.transform.position - transform.position);
                     StartCoroutine(this.UpdateItemDataCoroutine(newData));
                     other.needDestroy = true;

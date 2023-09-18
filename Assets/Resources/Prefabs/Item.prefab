@@ -99,6 +99,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 037a86a292fb1a147b1863a84e011024, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scoreboard: {fileID: 0}
+  sv: {fileID: 0}
   data: {fileID: 11400000, guid: ccc409174d62a124baa6325e140b63ba, type: 2}
   repository: {fileID: 11400000, guid: dd4a3a0e22596584397e131132dc4254, type: 2}
 --- !u!50 &463521613

@@ -75,3 +75,6 @@ crashlytics-build.properties
 .idea
 
 dist/
+
+AndroidProject
+AndroidProject_BurstDebugInformation_DoNotShip
